@@ -12,15 +12,20 @@ Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Keybrdg_LS_Removed
 
 ## R Markdown
 
-Here is what I know!  You need to click in environment and import the data set.  Here I have imported ``Keybrdg_LS_Removed_Redundant_Rows.csv"  Next I will start to use that data.  So here I am with the summary statistics
+Here is what I know!  You need to click in environment and import the data set.  Here I have imported ``Keybrdg_LS_Removed_Redundant_Rows"  Next I will start to use that data.  So here I am with the summary statistics
 
 ```{r baf}
 summary(Keybrdg_LS_Removed_Redundant_Rows)
 ```
 
-## Including Plots
+## Submitting to GitHub
 
-You can also embed plots, for example:
+To submit the changes you made to github you are going to need to let RStudio know who you are.  In the terminal below run the following commands
+
+git config --global user.name "User Name Here"
+git config --global user.email "email@ecok.edu"
+
+After you have done this click the Git tab on the upper right hand side and you can push (or commit) your code.
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
