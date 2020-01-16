@@ -371,16 +371,88 @@ summary {
 
 <div id="r-markdown" class="section level2">
 <h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<p>Here is what I know! You need to click in environment and import the data set. Here I have imported ``Keybrdg_LS_Removed_Redundant_Rows.csv&quot; Next I will start to use that data. So here I am with the summary statistics</p>
+<pre class="r"><code>summary(Keybrdg_LS_Removed_Redundant_Rows)</code></pre>
+<pre><code>##        V1              V2                       V3               V4       
+##  10     :    1   CA     : 7788   Traffic         : 5628   20190801: 3415  
+##  10002  :    1   TX     : 6967   Consumer/Finance: 5430   20190806: 3347  
+##  10003  :    1   FL     : 6168   Landlord Tenant : 5199   20190807: 3277  
+##  100042 :    1   GA     : 5394   Real Estate     : 4389   20190802: 3232  
+##  100048 :    1   NC     : 2891   Estate Planning : 3837   20190808: 3195  
+##  100053 :    1   NY     : 2406   Employment      : 3815   20190814: 3106  
+##  (Other):67636   (Other):36028   (Other)         :39344   (Other) :48070  
+##        V5                       V6               V7              V8       
+##  CA     : 7832                   :57764   0       :57764          :57764  
+##  TX     : 7113   Consumer/Finance:  738   20190827:  605   CA     : 1388  
+##  GA     : 5535   Traffic         :  706   20190828:  590   TX     : 1118  
+##  FL     : 3789   Landlord Tenant :  660   20190830:  588   GA     :  787  
+##  NC     : 2955   Estate Planning :  654   20190829:  578   FL     :  565  
+##  NY     : 2462   Real Estate     :  577   20190821:  554   MD     :  386  
+##  (Other):37956   (Other)         : 6543   (Other) : 6963   (Other): 5634  
+##                 V9              V10             V11       
+##                  :65769   0       :65769          :65769  
+##  Consumer/Finance:  152   20190829:  167   CA     :  317  
+##  Landlord Tenant :  132   20190828:  130   TX     :  239  
+##  Real Estate     :  120   20190822:  124   GA     :  134  
+##  Collection      :  114   20190824:  124   FL     :  104  
+##  Traffic         :  106   20190831:  124   IL     :   89  
+##  (Other)         : 1249   (Other) : 1204   (Other):  990  
+##                V12              V13             V14       
+##                  :67178   0       :67178          :67178  
+##  Consumer/Finance:   41   20190828:   39   CA     :   94  
+##  Collection      :   38   20190827:   38   TX     :   72  
+##  Real Estate     :   30   20190831:   38   GA     :   31  
+##  Contract        :   25   20190824:   37   FL     :   28  
+##  Traffic         :   25   20190829:   36   MD     :   21  
+##  (Other)         :  305   (Other) :  276   (Other):  218  
+##                V15              V16             V17       
+##                  :67482   0       :67482          :67482  
+##  Consumer/Finance:   18   20190820:   15   CA     :   35  
+##  Collection      :   12   20190827:   15   TX     :   20  
+##  Contract        :    9   20190821:   14   GA     :   11  
+##  Criminal        :    9   20190830:   14   MD     :   11  
+##  Landlord Tenant :    9   20190831:   14   NY     :    8  
+##  (Other)         :  103   (Other) :   88   (Other):   75  
+##                            V18              V19             V20       
+##                              :67587   0       :67587          :67587  
+##  Landlord Tenant             :    9   20190830:    8   CA     :   14  
+##  Collection                  :    5   20190828:    5   TX     :    7  
+##  Consumer/Finance            :    5   20190829:    5   MD     :    5  
+##  Civil Litigation            :    4   20190831:    5   SC     :    4  
+##  Business license, fees, etc.:    3   20190821:    4   GA     :    3  
+##  (Other)                     :   29   (Other) :   28   (Other):   22  
+##                   V21              V22             V23       
+##                     :67625   0       :67625          :67625  
+##  Collection         :    3   20190823:    4   OH     :    3  
+##  Consumer/Finance   :    2   20190829:    4   MD     :    2  
+##  General Law        :    2   20190831:    2   TX     :    2  
+##  Real Estate        :    2   20190815:    1   AL     :    1  
+##  Automobile Accident:    1   20190816:    1   AZ     :    1  
+##  (Other)            :    7   (Other) :    5   (Other):    8  
+##                V24              V25             V26       
+##                  :67632   0       :67632          :67632  
+##  Consumer/Finance:    2   20190828:    2   TX     :    2  
+##  Collection      :    1   20190830:    2   AL     :    1  
+##  Criminal        :    1   20190815:    1   AZ     :    1  
+##  DESCRIPTION 8   :    1   20190817:    1   IL     :    1  
+##  Education       :    1   20190822:    1   MD     :    1  
+##  (Other)         :    4   (Other) :    3   (Other):    4  
+##             V27                   V28             V29       
+##               :67639   0            :67639          :67639  
+##  DESCRIPTION 9:    1   20190829     :    1   AL     :    1  
+##  General Law  :    1   20190831     :    1   STATE 9:    1  
+##  Real Estate  :    1   INTAKE DATE 9:    1   TX     :    1  
+##                                                             
+##                                                             
+##                                                             
+##              V30                    V31              V32       
+##                :67640   0             :67640           :67640  
+##  DESCRIPTION 10:    1   20190831      :    1   STATE 10:    1  
+##  Real Estate   :    1   INTAKE DATE 10:    1   TX      :    1  
+##                                                                
+##                                                                
+##                                                                
+## </code></pre>
 </div>
 <div id="including-plots" class="section level2">
 <h2>Including Plots</h2>
