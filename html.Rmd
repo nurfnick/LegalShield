@@ -25,7 +25,7 @@ To submit the changes you made to github you are going to need to let RStudio kn
 git config --global user.name "User Name Here"
 git config --global user.email "email@ecok.edu"
 
-After you have done this click the Git tab on the upper right hand side and you can push (or commit) your code.
+After you have done this click the Git tab on the upper right hand side and you can push (or commit) your code.  Make sure to select the items and add a note otherwise it won't go through.
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
