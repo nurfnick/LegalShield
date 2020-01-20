@@ -27,8 +27,15 @@ git config --global user.email "email@ecok.edu"
 
 After you have done this click the Git tab on the upper right hand side and you can push (or commit) your code.  Make sure to select the items and add a note otherwise it won't go through.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+## Using R
+
+Let's see if I can use R to extract some information from the file.  I am looking at "DESCRIPTION 1" column here
+
+```{r}
+n = nrow(Keybrdg_LS_Removed_Redundant_Rows["V3"])
+table(Keybrdg_LS_Removed_Redundant_Rows['V3'])
+cbind(table(Keybrdg_LS_Removed_Redundant_Rows['V3'])/n)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
