@@ -7,7 +7,9 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
 Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
+LegalShield_Data_Analytics_Business_Cases_ECU_New <- read_excel("LegalShield Data Analytics Business Cases - ECU_New.xlsx")
 ```
 
 ## R Markdown
