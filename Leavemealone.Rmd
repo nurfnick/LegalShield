@@ -8,8 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl) 
-Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
-LegalShield_Data_Analytics_Business_Cases_ECU_New <- read_excel("LegalShield Data Analytics Business Cases - ECU_New.xlsx")
+Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
+LegalShield_Data_Analytics_Business_Cases_ECU_New <- read_excel("Data/LegalShield Data Analytics Business Cases - ECU_New.xlsx", sheet = "Q1 - Dataset 1", skip = 2)
 ```
 
 ## R Markdown
@@ -18,6 +18,7 @@ Here is what I know!  You need to click in environment and import the data set. 
 
 ```{r baf}
 summary(Keybrdg_LS_Removed_Redundant_Rows)
+summary(LegalShield_Data_Analytics_Business_Cases_ECU_New)
 ```
 
 ## Submitting to GitHub
