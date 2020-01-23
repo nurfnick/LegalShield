@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(readxl)
+library(readxl) 
 Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
 LegalShield_Data_Analytics_Business_Cases_ECU_New <- read_excel("LegalShield Data Analytics Business Cases - ECU_New.xlsx")
 ```
@@ -39,5 +39,14 @@ n = nrow(Keybrdg_LS_Removed_Redundant_Rows["V3"])
 table(Keybrdg_LS_Removed_Redundant_Rows['V3'])
 cbind(table(Keybrdg_LS_Removed_Redundant_Rows['V3'])/n)
 ```
+
+```{r}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(Keybrdg_LS_Removed_Redundant_Rows)
+pt$addColumnDataGroups("V3")
+pt$addRowDataGroups("V2")
+pt$defineCalculation(calculationName="TotalTrains", summariseExpression="n()")
+pt$renderPivot() ```
 
 See I did more this weekend... 

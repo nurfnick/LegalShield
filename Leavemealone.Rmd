@@ -1,0 +1,54 @@
+---
+title: "Getting Started with R"
+author: "Nicholas Jacob"
+date: "1/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl) 
+Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
+LegalShield_Data_Analytics_Business_Cases_ECU_New <- read_excel("LegalShield Data Analytics Business Cases - ECU_New.xlsx")
+```
+
+## R Markdown
+
+Here is what I know!  You need to click in environment and import the data set.  Here I have imported ``Keybrdg_LS_Removed_Redundant_Rows"  Next I will start to use that data.  So here I am with the summary statistics
+
+```{r baf}
+summary(Keybrdg_LS_Removed_Redundant_Rows)
+```
+
+## Submitting to GitHub
+
+To submit the changes you made to github you are going to need to let RStudio know who you are.  In the terminal below run the following commands
+
+git config --global user.name "User Name Here"
+git config --global user.email "email@ecok.edu"
+
+After you have done this click the Git tab on the upper right hand side and you can push (or commit) your code.  Make sure to select the items and add a note otherwise it won't go through.
+
+
+## Using R
+
+Let's see if I can use R to extract some information from the file.  I am looking at "DESCRIPTION 1" column here
+
+```{r}
+n = nrow(Keybrdg_LS_Removed_Redundant_Rows["V3"])
+table(Keybrdg_LS_Removed_Redundant_Rows['V3'])
+cbind(table(Keybrdg_LS_Removed_Redundant_Rows['V3'])/n)
+```
+
+```{r}
+library(pivottabler)
+pt <- PivotTable$new()
+pt$addData(Keybrdg_LS_Removed_Redundant_Rows)
+pt$addColumnDataGroups("V3")
+pt$addRowDataGroups("V2")
+pt$defineCalculation(calculationName="Claims by State", summariseExpression="n()")
+pt$renderPivot() 
+```
+
+
+See I did more this weekend... 
