@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl) 
 Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
-LegalShield_Data_Analytics_Business_Cases_ECU_New <- read_excel("Data/LegalShield Data Analytics Business Cases - ECU_New.xlsx", sheet = "Q1 - Dataset 1", skip = 2)
+Q1 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = 1, skip = 0)
 ```
 
 ## R Markdown
@@ -18,7 +18,8 @@ Here is what I know!  You need to click in environment and import the data set. 
 
 ```{r baf}
 summary(Keybrdg_LS_Removed_Redundant_Rows)
-summary(LegalShield_Data_Analytics_Business_Cases_ECU_New)
+summary(Q1)
+
 ```
 
 ## Submitting to GitHub
@@ -50,6 +51,17 @@ pt$addRowDataGroups("V2")
 pt$defineCalculation(calculationName="Claims by State", summariseExpression="n()")
 pt$renderPivot() 
 ```
+```{r}
+#spendTotals=D1("Total")
+#salesTotals=D2("Grand Total")
+lmSpendSales = lm(TotalX~totally, data = Q1)
+#print(Q1)
+plot(Q1$TotalX, Q1$totally, pch =16, col = "red")%>%
+abline(lmSpendSales) #Create the linear regression
+abline(lmSpendSales)
+plot(lmSpendSales, pch = 16, col = "red")
+summary(lmSpendSales)
 
+```
 
 See I did more this weekend... 
