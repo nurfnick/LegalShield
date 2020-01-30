@@ -42,7 +42,7 @@ table(Keybrdg_LS_Removed_Redundant_Rows['V3'])
 cbind(table(Keybrdg_LS_Removed_Redundant_Rows['V3'])/n)
 ```
 
-```{r}
+```{r Pivot Table (State x Product)}
 library(pivottabler)
 pt <- PivotTable$new()
 pt$addData(Keybrdg_LS_Removed_Redundant_Rows)
@@ -51,17 +51,16 @@ pt$addRowDataGroups("V2")
 pt$defineCalculation(calculationName="Claims by State", summariseExpression="n()")
 pt$renderPivot() 
 ```
-```{r}
-#spendTotals=D1("Total")
-#salesTotals=D2("Grand Total")
-lmSpendSales = lm(TotalX~totally, data = Q1)
-#print(Q1)
-plot(Q1$TotalX, Q1$totally, pch =16, col = "red")%>%
-abline(lmSpendSales) #Create the linear regression
-abline(lmSpendSales)
+```{r Linear Model}
+lmSpendSales = lm(Q1$Legal...5~Q1$`Total LGL` data = Q1)
 plot(lmSpendSales, pch = 16, col = "red")
 summary(lmSpendSales)
 
+```
+
+```{r}
+plot(Q1[[54]], Q1[[5]], pch =16, col = "red")
+abline(lmSpendSales, col="blue") #Create the linear regression
 ```
 
 See I did more this weekend... 
