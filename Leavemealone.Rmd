@@ -52,15 +52,27 @@ pt$defineCalculation(calculationName="Claims by State", summariseExpression="n()
 pt$renderPivot() 
 ```
 ```{r Linear Model}
-lmSpendSales = lm(Q1$Legal...5~Q1$`Total LGL` data = Q1)
-plot(lmSpendSales, pch = 16, col = "red")
-summary(lmSpendSales)
+lmTotalSpendSales =  lm(Q1$totally~Q1$TotalX)
+lmLglSpendSales = lm(Q1$Legal...5~Q1$`Total LGL`)
+lmBusSpendSales = lm(Q1$BUS...13~Q1$`Total BUS`)
+lmLchSpendSales = lm(Q1$Launch...17~Q1$`Total LCH`)
+lmEspSpendSales = lm(Q1$`LS En Espanol...21`~Q1$`Total Legal Espanol`)
+lmIdsSpendSales = lm(Q1$SAIDT~Q1$`Total IDS`)
+lmMultiVariateSpendSales = lm(Q1$totally~Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol` + Q1$TotalX)
+plot(lmTotalSpendSales, pch = 16, col = "red")
+summary(lmTotalSpendSales)
+summary(lmLglSpendSales)
+summary(lmBusSpendSales)
+summary(lmLchSpendSales)
+summary(lmEspSpendSales)
+summary(lmIdsSpendSales)
+summary(lmMultiVariateSpendSales)
 
 ```
 
 ```{r}
-plot(Q1[[54]], Q1[[5]], pch =16, col = "red")
-abline(lmSpendSales, col="blue") #Create the linear regression
+#plot(Q1[[54]], Q1[[5]], pch =16, col = "red")
+#abline(lmSpendSales, col="blue") #Create the linear regression
 ```
 
 See I did more this weekend... 

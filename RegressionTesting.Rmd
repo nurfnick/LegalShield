@@ -1,0 +1,33 @@
+---
+title: "Regressions for Fun"
+author: "D"
+date: "Today"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl) 
+Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
+Q1 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = 1, skip = 0)
+```
+
+
+```{r Linear Model}
+lmTotalSpendSales =  lm(Q1$totally~Q1$TotalX)
+lmLglSpendSales = lm(Q1$Legal...5~Q1$`Total LGL`)
+lmBusSpendSales = lm(Q1$BUS...13~Q1$`Total BUS`)
+lmLchSpendSales = lm(Q1$Launch...17~Q1$`Total LCH`)
+lmEspSpendSales = lm(Q1$`LS En Espanol...21`~Q1$`Total Legal Espanol`)
+lmIdsSpendSales = lm(Q1$SAIDT~Q1$`Total IDS`)
+lmMultiVariateSpendSales = lm(Q1$TotalX~Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`)
+summary(lmTotalSpendSales)
+summary(lmLglSpendSales)
+summary(lmBusSpendSales)
+summary(lmLchSpendSales)
+summary(lmEspSpendSales)
+summary(lmIdsSpendSales)
+summary(lmMultiVariateSpendSales)
+
+```
+
