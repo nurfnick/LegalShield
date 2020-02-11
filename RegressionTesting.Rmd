@@ -31,3 +31,27 @@ summary(lmMultiVariateSpendSales)
 
 ```
 
+```{r}
+# Loaging the library
+library(glmnet)
+
+# Loading the data
+x_vars <- model.matrix(Q1$TotalX~. , Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol` )
+y_var <- swiss$Fertility
+lambda_seq <- 10^seq(2, -2, by = -.1)
+
+# Splitting the data into test and train
+set.seed(86)
+train = sample(1:nrow(x_var), nrow(x_var)/2)
+x_test = (-train)
+y_test = y_var[test]
+
+cv_output <- cv.glmnet(x_vars[train,], y_var[train], 
+            alpha = 1, lambda = lambda_seq)
+
+# identifying best lamda
+best_lam <- cv_output$lambda.min
+```
+```{r}
+summary(lmMultiVariateSpendSales)
+```
