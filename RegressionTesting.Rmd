@@ -8,9 +8,19 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl) 
+library(plyr)
+library(readr)
+library(dplyr)
+library(caret)
+library(ggplot2)
+library(repr)
+```
+```{r Loading Data}
 Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
 Q1 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = 1, skip = 0)
+print(colnames(Q1))
 ```
+
 
 
 ```{r Linear Model}
@@ -28,7 +38,6 @@ summary(lmLchSpendSales)
 summary(lmEspSpendSales)
 summary(lmIdsSpendSales)
 summary(lmMultiVariateSpendSales)
-
 ```
 
 ```{r}
@@ -36,22 +45,63 @@ summary(lmMultiVariateSpendSales)
 library(glmnet)
 
 # Loading the data
-x_vars <- model.matrix(Q1$TotalX~. , Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol` )
-y_var <- swiss$Fertility
+x_vars <- Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol` 
+print(x_vars)
+y_var <- Q1$TotalX
 lambda_seq <- 10^seq(2, -2, by = -.1)
-
 # Splitting the data into test and train
 set.seed(86)
-train = sample(1:nrow(x_var), nrow(x_var)/2)
+train = sample(1:nrow(x_vars), nrow(x_vars)/2)
 x_test = (-train)
 y_test = y_var[test]
-
 cv_output <- cv.glmnet(x_vars[train,], y_var[train], 
             alpha = 1, lambda = lambda_seq)
-
 # identifying best lamda
 best_lam <- cv_output$lambda.min
 ```
+
 ```{r}
-summary(lmMultiVariateSpendSales)
+set.seed(100)
+index = sample(1:nrow(Q1), 0.7*nrow(Q1)) 
+
+train = Q1[index,] # Create the training data 
+test = Q1[-index,] # Create the test data
+
+dim(train)
+dim(test)
+
+cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "Total Legal Espanol", "TotalX")
+
+pre_proc_val <- preProcess(train[,cols], method = c("center", "scale"))
+
+train[,cols] = predict(pre_proc_val, train[,cols])
+test[,cols] = predict(pre_proc_val, test[,cols])
+
+summary(train)
+lr = lm(train$TotalX ~  train$`Total LGL` + train$`Total BUS` + train$`Total IDS` + train$`Total LCH` + train$`Total Legal Espanol`)
+summary(lr)
+
+cols_reg = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "Total Legal Espanol", "TotalX")
+
+dummies <- dummyVars(TotalX ~ ., data = Q1[,cols_reg])
+
+train_dummies = predict(dummies, newdata = train[,cols_reg])
+
+test_dummies = predict(dummies, newdata = test[,cols_reg])
+
+print(dim(train_dummies)); print(dim(test_dummies))
+
+library(glmnet)
+
+x = as.matrix(train_dummies)
+y_train = train$TotalX
+
+x_test = as.matrix(test_dummies)
+y_test = test$TotalX
+
+lambdas <- 10^seq(2, -3, by = -.1)
+
+ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
+
+summary(ridge_reg)
 ```
