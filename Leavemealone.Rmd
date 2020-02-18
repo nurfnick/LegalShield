@@ -71,8 +71,8 @@ summary(lmMultiVariateSpendSales)
 ```
 
 ```{r}
-#plot(Q1[[54]], Q1[[5]], pch =16, col = "red")
-#abline(lmSpendSales, col="blue") #Create the linear regression
+plot(lmTotalSpendSales)
+abline(lmSpendSales, col="blue") #Create the linear regression
 ```
 
 See I did more this weekend... 
