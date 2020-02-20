@@ -23,15 +23,13 @@ cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "Total Legal Espano
 Q1 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = 1, skip = 0)
 ```
 
-
-
 ```{r Linear Model}
-lmTotalSpendSales =  lm(Q1$totally~Q1$TotalX)
 lmLglSpendSales = lm(Q1$Legal...5~Q1$`Total LGL`)
 lmBusSpendSales = lm(Q1$BUS...13~Q1$`Total BUS`)
 lmLchSpendSales = lm(Q1$Launch...17~Q1$`Total LCH`)
 lmEspSpendSales = lm(Q1$`LS En Espanol...21`~Q1$`Total Legal Espanol`)
 lmIdsSpendSales = lm(Q1$SAIDT~Q1$`Total IDS`)
+lmDaySales = lm(Q1$TotalX~Q1$Day...40)
 lmMultiVariateSpendSales = lm(Q1$TotalX~Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`)
 summary(lmTotalSpendSales)
 summary(lmLglSpendSales)
@@ -40,40 +38,27 @@ summary(lmLchSpendSales)
 summary(lmEspSpendSales)
 summary(lmIdsSpendSales)
 summary(lmMultiVariateSpendSales)
+summary(lmDaySales)
 ```
 
-```{r}
-# Loaging the library
-library(glmnet)
-
-# Loading the data
-x_vars <- Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol` 
-print(x_vars)
-y_var <- Q1$TotalX
-lambda_seq <- 10^seq(2, -2, by = -.1)
-# Splitting the data into test and train
-set.seed(86)
-train = sample(1:nrow(x_vars), nrow(x_vars)/2)
-x_test = (-train)
-y_test = y_var[test]
-cv_output <- cv.glmnet(x_vars[train,], y_var[train], 
-            alpha = 1, lambda = lambda_seq)
-# identifying best lamda
-best_lam <- cv_output$lambda.min
-```
-
-```{r}
+```{r modeling data}
 set.seed(100)
+## creates an index for randomly sampling observations for data partitioning
 index = sample(1:nrow(Q1), 0.7*nrow(Q1)) 
 
+## train containing 70% of the data and test containing 30% of the data
 train = Q1[index,] # Create the training data 
 test = Q1[-index,] # Create the test data
 
 dim(train)
 dim(test)
+ 
+## Regularization
 
-cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "TotalX")
+## cols are meant to select only factors we are interested in from the train/test data
+cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH")
 
+##centers and scales data for training models
 pre_proc_val <- preProcess(train[,cols], method = c("center", "scale"))
 
 train[,cols] = predict(pre_proc_val, train[,cols])
@@ -94,22 +79,27 @@ test_dummies = predict(dummies, newdata = test[,cols_reg])
 print(dim(train_dummies)); print(dim(test_dummies))
 
 library(glmnet)
-
+##create the training data matrices for the independent (x) and dependent variables (y).
 x = as.matrix(train_dummies)
-y_train = train$TotalX
+y_train = as.matrix(train$TotalX)
 
 x_test = as.matrix(test_dummies)
-y_test = test$TotalX
-
+y_test = as.matrix(test$TotalX)
 lambdas <- 10^seq(2, -3, by = -.1)
 ```
+```{r Actual Regression}
+print(x)
+print(y_train)
+ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
+print(dummies)
+summary(ridge_reg)
+```
 
-```{r}
+## Plots Below
+
+```{r plots}
 plot(lr)
 
-
-```
-```{r}
 plot(train$`Total LGL` + train$`Total BUS` + train$`Total IDS` + train$`Total LCH` + train$`Total Legal Espanol`,train$TotalX )
 
 plot(train$`Total LGL` + train$`Total BUS` + train$`Total IDS` + train$`Total LCH` + train$`Total Legal Espanol`, train$TotalX ,
@@ -121,18 +111,13 @@ legend("topleft",
 c("Total Legal","Total BUS","Total IDS","Total LCH"),
 fill=c("blue","red","black","yellow")
 )
-
-require(ggplot2)
-ggplot(Q1, aes(y=Q1$TotalX, x=Q1$`Total LGL`))+geom_point(color = "red")+geom_smooth(method="lm")
-
-
-
-ggplot(Q1, aes(y=Q1$TotalX, x =Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`, color = Q1$Day...40))+geom_point()+geom_smooth(method="lm")
-
-ggplot(Q1, aes(y=Q1$TotalX, x =Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`, color = Q1$Day...40))+geom_point()+geom_smooth(method="lm")          
-
-print(Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`)
 ```
+
+```{r ggplotGraphs}
+require(ggplot2)
+ggplot(Q1, aes(y=Q1$TotalX, x =Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`, color = Q1$Day...40, xlab = "Amt. Spent on Advertising", ylab = "Number of Sales"))+geom_point()+geom_smooth(method="lm")+labs(x="Amt. Spent on Advertising ($USD)", y = "Number of Sales", color = "Day of the Week", title = "Spend Vs. Sales")
+```
+
 
 ``` {r}
 plot
