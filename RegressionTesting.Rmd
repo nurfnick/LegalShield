@@ -31,7 +31,6 @@ lmEspSpendSales = lm(Q1$`LS En Espanol...21`~Q1$`Total Legal Espanol`)
 lmIdsSpendSales = lm(Q1$SAIDT~Q1$`Total IDS`)
 lmDaySales = lm(Q1$TotalX~Q1$Day...40)
 lmMultiVariateSpendSales = lm(Q1$TotalX~Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`)
-summary(lmTotalSpendSales)
 summary(lmLglSpendSales)
 summary(lmBusSpendSales)
 summary(lmLchSpendSales)
@@ -88,11 +87,9 @@ y_test = as.matrix(test$TotalX)
 lambdas <- 10^seq(2, -3, by = -.1)
 ```
 ```{r Actual Regression}
-print(x)
-print(y_train)
-ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
-print(dummies)
-summary(ridge_reg)
+##ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
+##print(dummies)
+##summary(ridge_reg)
 ```
 
 ## Plots Below
@@ -120,16 +117,15 @@ ggplot(Q1, aes(y=Q1$TotalX, x =Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` 
 
 
 ``` {r}
-plot
 lambdas <- 10^seq(2, -3, by = -.1)
 
 # Setting alpha = 1 implements lasso regression
-lasso_reg <- cv.glmnet(x, y_train, alpha = 1, lambda = lambdas, standardize = TRUE, nfolds = 5)
+##lasso_reg <- cv.glmnet(x, y_train, alpha = 1, lambda = lambdas, standardize = TRUE, nfolds = 5)
 
 # Best 
-lambda_best <- lasso_reg$lambda.min 
-lambda_best
-ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
+##lambda_best <- lasso_reg$lambda.min 
+##lambda_best
+##ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
 
-summary(ridge_reg)
+##summary(ridge_reg)
 ```
