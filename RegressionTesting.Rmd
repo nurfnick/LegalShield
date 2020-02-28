@@ -18,7 +18,7 @@ library(repr)
 
 
 ```{r Loading Data}
-Keybrdg_LS_Removed_Redundant_Rows <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
+stateData <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
 cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "Total Legal Espanol", "TotalX")
 Q1 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = 1, skip = 0)
 ```
@@ -112,7 +112,15 @@ fill=c("blue","red","black","yellow")
 
 ```{r ggplotGraphs}
 require(ggplot2)
+library(usmap)
 ggplot(Q1, aes(y=Q1$TotalX, x =Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`, color = Q1$Day...40, xlab = "Amt. Spent on Advertising", ylab = "Number of Sales"))+geom_point()+geom_smooth(method="lm")+labs(x="Amt. Spent on Advertising ($USD)", y = "Number of Sales", color = "Day of the Week", title = "Spend Vs. Sales")
+
+usmapData <- aggregate(data.frame(claims = stateData$V2), list(state = stateData$V2), length)
+
+
+plot_usmap(data = usmapData, values = "claims", color = "black") + 
+  scale_fill_continuous(name = "Population (2015)", label = scales::comma, low = "white", high = "blue") + 
+  theme(legend.position = "right") + labs(title = "Claims by State")
 ```
 
 
