@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+##Below are the libraries used in the below code. RUN THIS CELL!
 library(readxl) 
 library(plyr)
 library(readr)
@@ -14,23 +16,45 @@ library(dplyr)
 library(caret)
 library(ggplot2)
 library(repr)
+library(usmap)
+library(plotly)
+library(gapminder)
 ```
 
 
 ```{r Loading Data}
-stateData <- read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv", header=FALSE)
-cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "Total Legal Espanol", "TotalX")
+##This cell loads the data from csv and xlsx to dataframes for use in R. RUN THIS CELL AFTER LOADING LIBRARIES!
+
+stateData <-
+  read.csv("/cloud/project/Data/Keybrdg_LS_Removed_Redundant_Rows.csv",
+           header = FALSE)
+
+cols = c("Total LGL",
+         "Total BUS",
+         "Total IDS",
+         "Total LCH",
+         "Total Legal Espanol",
+         "TotalX")
+
 Q1 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = 1, skip = 0)
+
+Q2 <- read_excel("Data/LegalShieldQ1.xlsx", sheet = "Q2", skip = 0)
 ```
 
 ```{r Linear Model}
-lmLglSpendSales = lm(Q1$Legal...5~Q1$`Total LGL`)
-lmBusSpendSales = lm(Q1$BUS...13~Q1$`Total BUS`)
-lmLchSpendSales = lm(Q1$Launch...17~Q1$`Total LCH`)
-lmEspSpendSales = lm(Q1$`LS En Espanol...21`~Q1$`Total Legal Espanol`)
-lmIdsSpendSales = lm(Q1$SAIDT~Q1$`Total IDS`)
-lmDaySales = lm(Q1$TotalX~Q1$Day...40)
-lmMultiVariateSpendSales = lm(Q1$TotalX~Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`)
+##runs the base linear model function on the data for each product advertised.
+
+lmLglSpendSales = lm(Q1$Legal...5 ~ Q1$`Total LGL`)
+lmBusSpendSales = lm(Q1$BUS...13 ~ Q1$`Total BUS`)
+lmLchSpendSales = lm(Q1$Launch...17 ~ Q1$`Total LCH`)
+lmEspSpendSales = lm(Q1$`LS En Espanol...21` ~ Q1$`Total Legal Espanol`)
+lmIdsSpendSales = lm(Q1$SAIDT ~ Q1$`Total IDS`)
+lmDaySales = lm(Q1$TotalX ~ Q1$Day...40)
+lmMultiVariateSpendSales = lm(
+  Q1$TotalX ~ Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`
+)
+
+##Below are the summaries for each regression. (They look better in the markdown. I promise.)
 summary(lmLglSpendSales)
 summary(lmBusSpendSales)
 summary(lmLchSpendSales)
@@ -40,100 +64,100 @@ summary(lmMultiVariateSpendSales)
 summary(lmDaySales)
 ```
 
-```{r modeling data}
-set.seed(100)
-## creates an index for randomly sampling observations for data partitioning
-index = sample(1:nrow(Q1), 0.7*nrow(Q1)) 
 
-## train containing 70% of the data and test containing 30% of the data
-train = Q1[index,] # Create the training data 
-test = Q1[-index,] # Create the test data
-
-dim(train)
-dim(test)
- 
-## Regularization
-
-## cols are meant to select only factors we are interested in from the train/test data
-cols = c("Total LGL", "Total BUS", "Total IDS", "Total LCH")
-
-##centers and scales data for training models
-pre_proc_val <- preProcess(train[,cols], method = c("center", "scale"))
-
-train[,cols] = predict(pre_proc_val, train[,cols])
-test[,cols] = predict(pre_proc_val, test[,cols])
-
-summary(train)
-lr = lm(train$TotalX ~  train$`Total LGL` + train$`Total BUS` + train$`Total IDS` + train$`Total LCH` + train$`Total Legal Espanol`)
-summary(lr)
-
-cols_reg = c("Total LGL", "Total BUS", "Total IDS", "Total LCH", "Total Legal Espanol", "TotalX")
-
-dummies <- dummyVars(TotalX ~ ., data = Q1[,cols_reg])
-
-train_dummies = predict(dummies, newdata = train[,cols_reg])
-
-test_dummies = predict(dummies, newdata = test[,cols_reg])
-
-print(dim(train_dummies)); print(dim(test_dummies))
-
-library(glmnet)
-##create the training data matrices for the independent (x) and dependent variables (y).
-x = as.matrix(train_dummies)
-y_train = as.matrix(train$TotalX)
-
-x_test = as.matrix(test_dummies)
-y_test = as.matrix(test$TotalX)
-lambdas <- 10^seq(2, -3, by = -.1)
-```
-```{r Actual Regression}
-##ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
-##print(dummies)
-##summary(ridge_reg)
-```
 
 ## Plots Below
 
-```{r plots}
-plot(lr)
 
-plot(train$`Total LGL` + train$`Total BUS` + train$`Total IDS` + train$`Total LCH` + train$`Total Legal Espanol`,train$TotalX )
 
-plot(train$`Total LGL` + train$`Total BUS` + train$`Total IDS` + train$`Total LCH` + train$`Total Legal Espanol`, train$TotalX ,
-main="Spend Vs. Sales",
-ylab="",
-type="l",
-col="blue")
-legend("topleft",
-c("Total Legal","Total BUS","Total IDS","Total LCH"),
-fill=c("blue","red","black","yellow")
+
+```{r ggplot Graphs}
+require(ggplot2)
+library(usmap)
+
+## Plot below constructs a scatterplot with regression lines (by day of week)
+
+ggplot(
+  Q1,
+  aes(
+    y = Q1$TotalX,
+    x = Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`,
+    color = Q1$Day...40,
+    xlab = "Amt. Spent on Advertising",
+    ylab = "Number of Sales"
+  )
+) + geom_point() + geom_smooth(method = "lm") + labs(
+  x = "Amt. Spent on Advertising ($USD)",
+  y = "Number of Sales",
+  color = "Day of the Week",
+  title = "Spend Vs. Sales"
 )
 ```
 
-```{r ggplotGraphs}
-require(ggplot2)
-library(usmap)
-ggplot(Q1, aes(y=Q1$TotalX, x =Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`, color = Q1$Day...40, xlab = "Amt. Spent on Advertising", ylab = "Number of Sales"))+geom_point()+geom_smooth(method="lm")+labs(x="Amt. Spent on Advertising ($USD)", y = "Number of Sales", color = "Day of the Week", title = "Spend Vs. Sales")
 
-usmapData <- aggregate(data.frame(claims = stateData$V2), list(state = stateData$V2), length)
+```{r usmap Graphs}
+## Data is aggregated to include a column for number of claims ordered by state
+usmapData <-
+  aggregate(data.frame(claims = stateData$V2),
+            list(state = stateData$V2),
+            length)
 
-
-plot_usmap(data = usmapData, values = "claims", color = "black") + 
-  scale_fill_continuous(name = "Population (2015)", label = scales::comma, low = "white", high = "blue") + 
-  theme(legend.position = "right") + labs(title = "Claims by State")
+## Aggregated data is plotted using usmap module
+plot_usmap(data = usmapData,
+           values = "claims",
+           color = "black") +
+  scale_fill_continuous(
+    name = "Population (2015)",
+    label = scales::comma,
+    low = "white",
+    high = "blue"
+  ) +
+  theme(legend.position = "right") + labs(title = "Claims by State  (August 2019)")
 ```
 
+```{r plotly Graphs}
+##stores the ggplot used in poster in a variable, p.
 
-``` {r}
-lambdas <- 10^seq(2, -3, by = -.1)
+p <- ggplot(
+  Q1,
+  aes(
+    y = Q1$TotalX,
+    x = Q1$`Total LGL` + Q1$`Total BUS` + Q1$`Total IDS` + Q1$`Total LCH` + Q1$`Total Legal Espanol`,
+    color = Q1$Day...40,
+    xlab = "Amt. Spent on Advertising",
+    ylab = "Number of Sales"
+  )
+) + geom_point() + geom_smooth(method = "lm") + labs(
+  x = "Amt. Spent on Advertising ($USD)",
+  y = "Number of Sales",
+  color = "Day of the Week",
+  title = "Spend Vs. Sales"
+) + theme_bw()
 
-# Setting alpha = 1 implements lasso regression
-##lasso_reg <- cv.glmnet(x, y_train, alpha = 1, lambda = lambdas, standardize = TRUE, nfolds = 5)
+##running the ggplotly function with the stored ggplot as input. Creates the interactive html graphic.
 
-# Best 
-##lambda_best <- lasso_reg$lambda.min 
-##lambda_best
-##ridge_reg = glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'gaussian', lambda = lambdas)
-
-##summary(ridge_reg)
+ggplotly(p)
 ```
+
+```{r ggplotly with date range test}
+p2 <- ggplot(
+  Q1,
+  aes(
+    y = Q1$TotalX,
+    x = Q1$Date...4,
+    xlab = "Amt. Spent on Advertising",
+    ylab = "Number of Sales"
+  )
+) + geom_point() + geom_smooth(method = "lm") + labs(
+  x = "Amt. Spent on Advertising ($USD)",
+  y = "Number of Sales",
+  color = "Day of the Week",
+  title = "Spend Vs. Sales"
+) + theme_bw()
+p2 <- ggplotly(p2)
+p2 <- p2 %>% layout(rangeslider = list(type = "date"))
+
+ggplotly(p2)
+
+```
+
